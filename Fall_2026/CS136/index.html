@@ -440,7 +440,7 @@ code { font-family: var(--mono); font-size: 11px; background: #020408; color: va
       <p>Clicking "I Agree" confirms you are 18 or older and voluntarily consent to participate in this research study.</p>
     </div>
     <div class="crow"><input type="checkbox" id="cchk"><label for="cchk">I have read the above, I am 18 or older, and I voluntarily agree to participate in this research study.</label></div>
-    <button class="btn-y btn-big" id="btn-consent" disabled onclick="goPage('pg-identity')">I Agree — Continue</button>
+    <button class="btn-y btn-big" id="btn-consent" disabled onclick="recordConsent(); goPage('pg-identity')">I Agree — Continue</button>
   </div>
 </div>
 </div>
