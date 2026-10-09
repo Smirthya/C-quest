@@ -440,7 +440,7 @@ code { font-family: var(--mono); font-size: 11px; background: #020408; color: va
       <p>Clicking "I Agree" confirms you are 18 or older and voluntarily consent to participate in this research study.</p>
     </div>
     <div class="crow"><input type="checkbox" id="cchk"><label for="cchk">I have read the above, I am 18 or older, and I voluntarily agree to participate in this research study.</label></div>
-    <button class="btn-y btn-big" id="btn-consent" disabled onclick="goPage('pg-identity')">I Agree — Continue</button>
+    <button class="btn-y btn-big" id="btn-consent" disabled onclick="recordConsent(); goPage('pg-identity')">I Agree — Continue</button>
   </div>
 </div>
 </div>
@@ -1058,6 +1058,20 @@ function checkPostComplete(){
 // ══════════════════════════════════════════════════════════════
 //  NAVIGATION
 // ══════════════════════════════════════════════════════════════
+var consentPageShownAt = Date.now();
+
+function recordConsent() {
+  var chk = document.getElementById('cchk');
+  var label = chk ? document.querySelector('label[for="' + chk.id + '"]') : null;
+  S.consent = {
+    given: chk ? chk.checked : false,
+    statement: label ? label.innerText.trim() : '',
+    ts: new Date().toISOString(),
+    secondsOnPage: Math.round((Date.now() - consentPageShownAt) / 1000)
+  };
+  lg('system', 'consent', 'agree', 'consent_given', S.consent);
+}
+   
 document.getElementById('cchk').addEventListener('change', e =>
   document.getElementById('btn-consent').disabled = !e.target.checked);
 
@@ -3600,6 +3614,12 @@ function buildReadableReport(){
       'Session Duration (minutes)': Math.round(S.dur/60*10)/10,
       'Topics Completed': topicIdx+1,
       'Total Topics': TOPICS.length
+    },
+    '=== CONSENT ===': {
+      'Consent given': (S.consent && S.consent.given) ? 'Yes' : 'No record',
+      'Checkbox statement agreed to': S.consent ? S.consent.statement : 'N/A',
+      'Consent timestamp': S.consent ? S.consent.ts : 'N/A',
+      'Time spent on consent page (seconds)': S.consent ? S.consent.secondsOnPage : 'N/A'
     }
   };
 
